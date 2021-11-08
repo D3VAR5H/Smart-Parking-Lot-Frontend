@@ -6,40 +6,48 @@ import ApiService from "../services/ApiService";
 const ParkingMapScreen = ({ navigation }) => {
 	const [parkingDetails, setParkingDetails] = useState({});
 
-	useEffect(() => {
-		// ApiService.getParkingLot().then((res) => {
-		// 	setParkingDetails({
-		// 		slots: res.data.slots,
-		// 		total: res.data.slots?.length,
-		// 		parked: res.data.slots?.reduce((pv, cv) => (cv.isPresent ? pv + 1 : pv)),
-		// 	});
-		// });
-		setParkingDetails({
-			slots: [
-				{ isPresent: false, slot: 1 },
-				{ isPresent: false, slot: 2 },
-				{ isPresent: true, slot: 3 },
-				{ isPresent: true, slot: 4 },
-				{ isPresent: false, slot: 5 },
-				{ isPresent: false, slot: 6 },
-				{ isPresent: false, slot: 7 },
-				{ isPresent: false, slot: 8 },
-			],
-			total: 8,
-			parked: 2,
+	const fetchParkingMapDetails = () => {
+		ApiService.getParkingLot().then((res) => {
+			setParkingDetails({
+				slots: res.data.slots,
+				total: res.data.slots?.length,
+				parked: res.data.slots?.reduce((pv, cv) => (cv.isPresent ? pv + 1 : pv), 0),
+			});
 		});
-	}, 3000);
+	};
+
+	useEffect(() => {
+		fetchParkingMapDetails();
+		const interval = setInterval(() => {
+			fetchParkingMapDetails();
+			// setParkingDetails({
+			// 	slots: [
+			// 		{ isPresent: false, slot: 1 },
+			// 		{ isPresent: false, slot: 2 },
+			// 		{ isPresent: true, slot: 3 },
+			// 		{ isPresent: true, slot: 4 },
+			// 		{ isPresent: false, slot: 5 },
+			// 		{ isPresent: false, slot: 6 },
+			// 		{ isPresent: false, slot: 7 },
+			// 		{ isPresent: false, slot: 8 },
+			// 	],
+			// 	total: 8,
+			// 	parked: 2,
+			// });
+		}, 5000);
+		return () => clearInterval(interval);
+	});
 
 	return (
 		<View style={{ flex: 1, alignItems: "center", justifyContent: "space-evenly" }}>
 			<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
 				<Text style={styles.textTitle}>{"Map of Parking Lot"}</Text>
 			</View>
-            <Text style={styles.gateText}>{"Entry"}</Text>
+			<Text style={styles.gateText}>{"Entry"}</Text>
 			<View style={styles.parkingSlots}>
 				{parkingDetails.slots?.map((slot, index) => (
-					<View style={[styles.parkingSlot, { backgroundColor: slot?.isPresent ? "#e82113" : "#DDDDDD" }]}>
-						<Text style={styles.gateText, {color:slot?.isPresent ? "white" : "#black"}}>{index + 1}</Text>
+					<View key={index} style={[styles.parkingSlot, { backgroundColor: slot?.isPresent ? "#e82113" : "#DDDDDD" }]}>
+						<Text style={(styles.gateText, { color: slot?.isPresent ? "white" : "#black" })}>{index + 1}</Text>
 					</View>
 				))}
 			</View>

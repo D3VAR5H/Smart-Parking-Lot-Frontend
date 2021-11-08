@@ -9,9 +9,9 @@ const OtpInputScreen = ({ navigation, ...rest }) => {
 	const textInput = useRef(null);
 
 	const onPressContinue = () => {
-		// ApiService.verifyOTP({ otp: OTP, contact_number: rest.route.params.phoneNumber }).then((res) => {
-		navigation.navigate("ParkingMap");
-		// });
+		ApiService.verifyOTP({ otp: OTP, contact_number: rest.route.params.phoneNumber }).then((res) => {
+			navigation.navigate("ParkingMap");
+		});
 	};
 
 	useEffect(() => {
